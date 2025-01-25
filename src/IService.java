@@ -1,6 +1,6 @@
 public interface IService {
-    public void Service(Animal pet);
-    public void CancelService(Animal pet);
-    public void ServiceFinished(Animal pet);
+    public void service(Animal pet);
+    public void cancelService(Animal pet);
+    public void serviceFinished(Animal pet);
 }
 // пока не имеет смысла, потом добавлю больше стаффа. Возможно
