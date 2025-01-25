@@ -22,4 +22,5 @@ public class Veterinarian extends Person implements IService {
     public void ServiceFinished(Animal pet) {
         pet.addMedicalHistory("Treated by Veterinarian " + getName());
     }
+    CancelService(Animal pet)
 }
