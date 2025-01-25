@@ -8,19 +8,19 @@ public class Veterinarian extends Person implements IService {
 
 
     @Override
-    public void Service(Animal pet) {
+    public void service(Animal pet) {
         pet.setAppointment("Appointed by Veterinarian " + getName());
     }
 
     @Override
-    public void CancelService(Animal pet) {
+    public void cancelService(Animal pet) {
         pet.setAppointment("Not appointed");
 
     }
 
     @Override
-    public void ServiceFinished(Animal pet) {
+    public void serviceFinished(Animal pet) {
         pet.addMedicalHistory("Treated by Veterinarian " + getName());
     }
-    CancelService(Animal pet)
+    cancelService(Animal pet)
 }
