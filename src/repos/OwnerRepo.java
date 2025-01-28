@@ -3,10 +3,8 @@ import data.interfaces.IDB;
 import classes.Owner;
 import repos.interfaces.IOwnerRepo;
 import java.sql.*;
-
 import java.util.ArrayList;
 import java.util.List;
-
 public class OwnerRepo implements IOwnerRepo{
     private final IDB db;
     public OwnerRepo(IDB db) {
@@ -16,9 +14,9 @@ public class OwnerRepo implements IOwnerRepo{
     public boolean createOwner(Owner owner) {
         Connection conn = null;
         try {
-            con = db.getConnection();
+            conn=db.getConnection();
             String sqlCommand = "INSERT INTO owners(name,surname,age,phoneNumber,numberOfPets,gender) VALUES(?, ?, ?, ?,?, ?)";
-            PreparedStatement st = con.prepareStatement(sqlCommand);
+            PreparedStatement st = conn.prepareStatement(sqlCommand);
             st.setString(1, owner.getName());
             st.setString(2, owner.getSurname());
             st.setInt(3, owner.getAge());

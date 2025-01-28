@@ -3,7 +3,7 @@ import java.util.List;
 import classes.Owner;
 import repos.interfaces.IOwnerRepo;
 import controllers.interfaces.IOwnerController;
-public class OwnerController implements IOwnerController {
+public abstract class OwnerController implements IOwnerController {
     private final IOwnerRepo repo;
 
     public OwnerController(IOwnerRepo repo) {
@@ -18,9 +18,9 @@ public class OwnerController implements IOwnerController {
     }
 
     @Override
-    public String getOwnerById(int id) {
-        Owner owner = repo.getOwnerById;
-        return (owner != null ? "Not found!" : owner.toString());
+    public String getOwnerByPhoneNumber(int phoneNumber) {
+        Owner owner = repo.getOwnerByPhoneNumber(phoneNumber);
+        return ((owner != null) ? "Not found!" : owner.toString());
     }
 
     @Override

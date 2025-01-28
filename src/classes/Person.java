@@ -67,4 +67,5 @@ abstract public class Person {
     }
 
 
+    public abstract String getSurname();
 }

@@ -3,6 +3,6 @@ import java.util.List;
 import classes.Owner;
 public interface IOwnerRepo {
         boolean createOwner(Owner owner);
-        Owner getOwnerById(int id);
+        Owner getOwnerByPhoneNumber(int phoneNumber);
         List<Owner> getAllOwners();
     }

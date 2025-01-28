@@ -4,6 +4,8 @@ public interface IOwnerController {
 
     String getOwnerById(int id);
 
+    String getOwnerByPhoneNumber(int phoneNumber);
+
     String getAllOwners();
 }
 
