@@ -1,5 +1,4 @@
 package classes;
-
 abstract public class Person {
     private String name;
     private String email;
