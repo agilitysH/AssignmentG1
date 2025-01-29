@@ -1,5 +1,4 @@
 package classes;
-
 public class Veterinarian extends Person{
     private int amountOfAppointments = 0;
 
@@ -10,10 +9,10 @@ public class Veterinarian extends Person{
     public void setAmountOfAppointments(int amountOfAppointments) {
         this.amountOfAppointments = amountOfAppointments;
     }
-
     Veterinarian() {
         super();
     }
+
     Veterinarian(String name, String email, int age, int phoneNumber, boolean gender) {
         super(name, email, age, phoneNumber, gender);
     }
