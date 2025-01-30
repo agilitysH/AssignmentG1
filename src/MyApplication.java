@@ -17,7 +17,7 @@ public final class MyApplication {
         this.animalController = animalController;
     }
 
-    private int mainMenu() {
+    private void mainMenu() {
         System.out.println();
         System.out.println("Welcome to My Application");
         System.out.println("Select one of the following options:");
@@ -27,7 +27,7 @@ public final class MyApplication {
         System.out.println("0. Exit");
         System.out.println();
         System.out.print("Select an option (1-3): ");
-        return 0;
+      
     }
 
     public void start() {
