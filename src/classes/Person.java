@@ -6,17 +6,27 @@ abstract public class Person {
     private int age;
     private static int idCounter = 0;
     private int id;
-    private boolean gender;
+    private String gender;
     public Person() {
         id = ++idCounter;
     }
-    public Person(String name, String email, int age, int phoneNumber, boolean gender) {
+    public Person(String name, String email, int age, int phoneNumber, String gender) {
         this();
         this.name = name;
         this.email = email;
         this.age = age;
         this.phoneNumber = phoneNumber;
     }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+
 
     public String getName() {
         return name;
@@ -67,5 +77,4 @@ abstract public class Person {
     }
 
 
-    public abstract String getSurname();
 }

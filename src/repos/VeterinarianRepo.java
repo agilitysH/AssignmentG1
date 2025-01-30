@@ -8,21 +8,24 @@ import java.util.List;
 
 public class VeterinarianRepo implements IVeterinarianRepo {
     private final IDB db;
-    public Repo(IDB db) {
+
+    public VeterinarianRepo(IDB db) {
         this.db = db;
     }
+
     @Override
     public boolean createVeterinarian(Veterinarian veterinarian) {
         Connection con = null;
         try {
             con =db.getConnection();
-            String sqlCommand = "INSERT INTO veterinarians(name, email, age, phoneNumber, gender) VALUES(?, ?, ?, ?,?)";
+            String sqlCommand = "INSERT INTO veterinarians(id, name, email, age, phonenumber, gender) VALUES(?, ?, ?, ?,?, ?)";
             PreparedStatement st = con.prepareStatement(sqlCommand);
-            st.setString(1, veterinarian.getName());
-            st.setString(2, veterinarian.getEmail());
-            st.setInt(3, veterinarian.getAge());
-            st.setInt(4, veterinarian.getPhoneNumber());
-            st.setString(5, veterinarian.getGender());
+            st.setInt(1, veterinarian.getId());
+            st.setString(2, veterinarian.getName());
+            st.setString(3, veterinarian.getEmail());
+            st.setInt(4, veterinarian.getAge());
+            st.setInt(5, veterinarian.getPhoneNumber());
+            st.setString(6, veterinarian.getGender());
             st.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -34,20 +37,21 @@ public class VeterinarianRepo implements IVeterinarianRepo {
     }
 
     @Override
-    public Veterinarian getVeterinarianByPhoneNumber(int phoneNumber) {
+    public Veterinarian getVeterinarianById(int id) {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sqlCommand = "SELECT name, email, age, phoneNumber, gender FROM veterinarians WHERE id = ?";
+            String sqlCommand = "SELECT id, name, email, age, phonenumber, gender FROM veterinarians WHERE id = ?";
             PreparedStatement st = con.prepareStatement(sqlCommand);
 
-            st.setInt(1, phoneNumber);
+            st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 Veterinarian veterinarian = new Veterinarian();
-                veterinarian.setName(rs.getInt("name")); //
+                veterinarian.setId(rs.getInt("id"));
+                veterinarian.setName(rs.getString("name")); //
                 veterinarian.setEmail(rs.getString("email"));
-                veterinarian.setAge(rs.getString("age"));
+                veterinarian.setAge(rs.getInt("age"));
                 veterinarian.setPhoneNumber(rs.getInt("phoneNumber"));
                 veterinarian.setGender(rs.getString("gender"));
                 return veterinarian;
@@ -65,15 +69,16 @@ public class VeterinarianRepo implements IVeterinarianRepo {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sqlCommand = "SELECT name, email, age, phoneNumber, gender FROM veterinarians";
+            String sqlCommand = "SELECT id, name, email, age, phonenumber, gender FROM veterinarians";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sqlCommand);
             List<Veterinarian> veterinarians = new ArrayList<>();
             while (rs.next()) {
                 Veterinarian veterinarian = new Veterinarian();
-                veterinarian.setName(rs.getInt("name")); //
+                veterinarian.setId(rs.getInt("id"));
+                veterinarian.setName(rs.getString("name")); //
                 veterinarian.setEmail(rs.getString("email"));
-                veterinarian.setAge(rs.getString("age"));
+                veterinarian.setAge(rs.getInt("age"));
                 veterinarian.setPhoneNumber(rs.getInt("phoneNumber"));
                 veterinarian.setGender(rs.getString("gender"));
             }

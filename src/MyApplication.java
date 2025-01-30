@@ -2,7 +2,7 @@ import controllers.interfaces.IOwnerController;
 import repos.interfaces.IOwnerRepo;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-public static class MyApplication {
+public class MyApplication {
     private final IOwnerController controller;
     private final Scanner scanner = new Scanner(System.in);
 
@@ -28,13 +28,13 @@ public static class MyApplication {
             try {
                 int option = scanner.nextInt();
                 switch (option) {
-                    case 1:
+                    case 3:
                         createOwnerMenu();
                         break;
                     case 2:
-                        getOwnerByPhoneNumberMenu();
+                        getOwnerById();
                         break;
-                    case 3:
+                    case 1:
                         getAllOwnersMenu();
                         break;
                     default:
@@ -53,26 +53,26 @@ public static class MyApplication {
     private void createOwnerMenu() {
         System.out.println("Please enter name: ");
         String name = scanner.next();
-        System.out.println("Please enter surname: ");
-        String surname = scanner.next();
+        System.out.println("Please enter email: ");
+        String email = scanner.next();
         System.out.println("Please enter age: ");
-        String age = String.valueOf(Integer.parseInt(scanner.next()));
+        int age = scanner.nextInt();
+        scanner.nextLine();
         System.out.println("Please enter phone number: ");
-        String phoneNumber = String.valueOf(Integer.parseInt(scanner.next()));
-        System.out.println("Please enter number of pets: ");
-        String numberOfPets = String.valueOf(Integer.parseInt(scanner.next()));
-        System.out.println("Please enter gender (male/female: ");
+        int phoneNumber = scanner.nextInt();
+        scanner.nextLine();
+        System.out.println("Please enter gender ");
         String gender = scanner.next();
 
-        String response = controller.createOwner(name, surname, age, phoneNumber, numberOfPets, gender);
+        String response = controller.createOwner(name, email, age, phoneNumber, gender);
         System.out.println(response);
     }
 
-    private void getOwnerByPhoneNumberMenu() {
-        System.out.println("Please enter a user phone number: ");
-        int phoneNumber = scanner.nextInt();
+    private void getOwnerById() {
+        System.out.println("Please enter a user id: ");
+        int id = scanner.nextInt();
 
-        String response = controller.getOwnerByPhoneNumber(phoneNumber);
+        String response = controller.getOwnerById(id);
         System.out.println(response);
     }
 

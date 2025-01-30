@@ -15,14 +15,14 @@ public class OwnerRepo implements IOwnerRepo{
         Connection conn = null;
         try {
             conn=db.getConnection();
-            String sqlCommand = "INSERT INTO owners(name,surname,age,phoneNumber,numberOfPets,gender) VALUES(?, ?, ?, ?,?, ?)";
+            String sqlCommand = "INSERT INTO owners(id,name,email, age,phonenumber, gender) VALUES(?, ?, ?, ?,?, ?)";
             PreparedStatement st = conn.prepareStatement(sqlCommand);
-            st.setString(1, owner.getName());
-            st.setString(2, owner.getSurname());
-            st.setInt(3, owner.getAge());
-            st.setInt(4, owner.phoneNumber());
-            st.setInt(5, owner.getNumberOfPets());
-            st.setString(6, owner.Gender());
+            st.setInt(1, owner.getId());
+            st.setString(2, owner.getName());
+            st.setString(3, owner.getEmail());
+            st.setInt(4, owner.getAge());
+            st.setInt(5, owner.getPhoneNumber());
+            st.setString(6, owner.getGender());
             st.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -37,17 +37,19 @@ public class OwnerRepo implements IOwnerRepo{
         Connection con = null;
         try {
             con = db.getConnection();
-            String sqlCommand = "name,surname,age,phoneNumber,numberOfPets,gender FROM owners WHERE id = ?";
+            String sqlCommand = "SELECT id,name,email,age,phonenumber,numberofpets,gender FROM owners WHERE id = ?";
             PreparedStatement st = con.prepareStatement(sqlCommand);
 
             st.setInt(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 Owner owner = new Owner();
+                owner.setId(rs.getInt("id"));
                 owner.setName(rs.getString("name"));
-                owner.setSurname(rs.getString("surname"));
+                owner.setEmail(rs.getString("email"));
                 owner.setAge(rs.getInt("age"));
                 owner.setPhoneNumber(rs.getInt("phoneNumber"));
+                owner.setNumberOfPets(rs.getInt("numberOfPets"));
                 owner.setGender(rs.getString("gender"));
                 return owner;
             }
@@ -64,20 +66,19 @@ public class OwnerRepo implements IOwnerRepo{
         Connection con = null;
         try {
             con = db.getConnection();
-            String sqlCommand = "name,surname,age,phoneNumber,numberOfPets,gender FROM owners";
+            String sqlCommand = "SELECT id, name, email ,age,phonenumber,numberofpets,gender FROM owners";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sqlCommand);
             List<Owner> owners = new ArrayList<>();
             while (rs.next()) {
                 Owner owner = new Owner();
-                Owner owner = new Owner();
+                owner.setId(rs.getInt("id"));
                 owner.setName(rs.getString("name"));
-                owner.setSurname(rs.getString("surname"));
+                owner.setEmail(rs.getString("email"));
                 owner.setAge(rs.getInt("age"));
                 owner.setPhoneNumber(rs.getInt("phoneNumber"));
+                owner.setNumberOfPets(rs.getInt("numberOfPets"));
                 owner.setGender(rs.getString("gender"));
-                return owner;
-
             }
             return owners;
 

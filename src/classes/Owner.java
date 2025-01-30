@@ -3,25 +3,32 @@ package classes;
 import java.util.List;
 
 public class Owner extends Person {
-private List<Animal> pets;
 
-public void addPet(Animal animal) {
-    pets.add(animal);
-}
+    private int numberOfPets;
 
-public List<Animal> getPets() {
-    return pets;
-}
+    public int getNumberOfPets() {
+        return numberOfPets;
+    }
+
+    public void setNumberOfPets(int numberOfPets) {
+        this.numberOfPets = numberOfPets;
+    }
+
+
 
     public Owner() {
         super();
     }
 
-    public Owner(String name, String surname, int age, int phoneNumber, int numberOfPets, boolean gender) {
-        super(name, surname, age, phoneNumber, gender);
+    public Owner(String name, String email, int age, int phoneNumber, int numberOfPets, String gender) {
+        super(name, email, age, phoneNumber, gender);
+        this.numberOfPets = numberOfPets;
     }
 
-    public Owner(String name, String surname, int age, int phoneNumber, boolean gender) {
-        super(name, surname, age, phoneNumber, gender);
+    public Owner(String name, String email, int age, int phoneNumber, String gender) {
+        super(name, email, age, phoneNumber, gender);
+        this.numberOfPets = 1;
     }
+
+
 }

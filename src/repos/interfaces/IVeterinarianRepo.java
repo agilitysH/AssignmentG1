@@ -3,7 +3,9 @@ import java.util.List;
 import classes.Veterinarian;
 public interface IVeterinarianRepo {
     boolean createVeterinarian(Veterinarian veterinarian);
-    Veterinarian  getVeterinarianByPhoneNumber(int phoneNumber);
+
+    Veterinarian getVeterinarianById(int id);
+
     List<Veterinarian> getAllVeterinarians();
 
 }

@@ -3,21 +3,23 @@ import java.util.List;
 import classes.Veterinarian;
 import repos.interfaces.IVeterinarianRepo;
 import controllers.interfaces.IVeterinarianController;
-public class VeterinarianController implements IVeterinarianRepo {
+public class VeterinarianController implements IVeterinarianController {
     private final IVeterinarianRepo repo;
-    public Veterinarian(IVeterinarianRepo repo) {
+
+    public VeterinarianController(IVeterinarianRepo repo) {
         this.repo = repo;
     }
+
     @Override
-    public String createVeterinarian(String name, String email, int age, int phoneNumber, boolean gender) {
+    public String createVeterinarian(String name, String email, int age, int phoneNumber, String gender) {
         Veterinarian veterinarian = new Veterinarian(name, email, age, phoneNumber, gender);
         boolean created = repo.createVeterinarian(veterinarian);
 
         return (created? "Created": "Creation failed");
     }
     @Override
-    public String getVeterinarianByPhoneNumber(int phoneNumber) {
-        Veterinarian veterinarian = repo.getVeterinarianByPhoneNumber(phoneNumber);
+    public String getVeterinarianById(int id) {
+        Veterinarian veterinarian = repo.getVeterinarianById(id);
 
         return (veterinarian == null) ? "Not found!" : veterinarian.toString();
     }
