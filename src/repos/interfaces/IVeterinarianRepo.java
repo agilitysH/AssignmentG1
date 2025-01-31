@@ -8,4 +8,9 @@ public interface IVeterinarianRepo {
 
     List<Veterinarian> getAllVeterinarians();
 
+    boolean updateVeterinarian(Veterinarian veterinarian);
+
+    boolean deleteVeterinarian(int id);
+
+    boolean updateIsOccupied(int id, boolean isOccupied);
 }

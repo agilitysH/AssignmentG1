@@ -41,7 +41,7 @@ public class VeterinarianRepo implements IVeterinarianRepo {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sqlCommand = "SELECT id, name, email, age, phonenumber, gender FROM veterinarians WHERE id = ?";
+            String sqlCommand = "SELECT id, name, email, age, phonenumber, gender, isOccupied FROM veterinarians WHERE id = ?";
             PreparedStatement st = con.prepareStatement(sqlCommand);
 
             st.setInt(1, id);
@@ -49,11 +49,12 @@ public class VeterinarianRepo implements IVeterinarianRepo {
             if (rs.next()) {
                 Veterinarian veterinarian = new Veterinarian();
                 veterinarian.setId(rs.getInt("id"));
-                veterinarian.setName(rs.getString("name")); //
+                veterinarian.setName(rs.getString("name"));
                 veterinarian.setEmail(rs.getString("email"));
                 veterinarian.setAge(rs.getInt("age"));
                 veterinarian.setPhoneNumber(rs.getInt("phoneNumber"));
                 veterinarian.setGender(rs.getString("gender"));
+                veterinarian.setOccupied(rs.getBoolean("isOccupied"));
                 return veterinarian;
             }
         } catch (SQLException e) {
@@ -69,18 +70,20 @@ public class VeterinarianRepo implements IVeterinarianRepo {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sqlCommand = "SELECT id, name, email, age, phonenumber, gender FROM veterinarians";
+            String sqlCommand = "SELECT id, name, email, age, phonenumber, gender, isOccupied FROM veterinarians";
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sqlCommand);
             List<Veterinarian> veterinarians = new ArrayList<>();
             while (rs.next()) {
                 Veterinarian veterinarian = new Veterinarian();
                 veterinarian.setId(rs.getInt("id"));
-                veterinarian.setName(rs.getString("name")); //
+                veterinarian.setName(rs.getString("name"));
                 veterinarian.setEmail(rs.getString("email"));
                 veterinarian.setAge(rs.getInt("age"));
                 veterinarian.setPhoneNumber(rs.getInt("phoneNumber"));
                 veterinarian.setGender(rs.getString("gender"));
+                veterinarian.setOccupied(rs.getBoolean("isOccupied")); // Set the isOccupied field
+                veterinarians.add(veterinarian);
             }
             return veterinarians;
 
@@ -91,5 +94,65 @@ public class VeterinarianRepo implements IVeterinarianRepo {
         }
         return null;
     }
+    @Override
+    public boolean updateVeterinarian(Veterinarian veterinarian) {
+        Connection conn = null;
+        try {
+            conn = db.getConnection();
+            String sqlCommand = "UPDATE veterinarians SET name = ?, email = ?, age = ?, phonenumber = ?, gender = ? WHERE id = ?";
+            PreparedStatement st = conn.prepareStatement(sqlCommand);
+
+            st.setString(1, veterinarian.getName());
+            st.setString(2, veterinarian.getEmail());
+            st.setInt(3, veterinarian.getAge());
+            st.setInt(4, veterinarian.getPhoneNumber());
+            st.setString(5, veterinarian.getGender());
+            st.setInt(6, veterinarian.getId());
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteVeterinarian(int id) {
+        Connection conn = null;
+        try {
+            conn = db.getConnection();
+            String sqlCommand = "DELETE FROM veterinarians WHERE id = ?";
+            PreparedStatement st = conn.prepareStatement(sqlCommand);
+
+            st.setInt(1, id);
+
+            int rowsDeleted = st.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    @Override
+    public boolean updateIsOccupied(int id, boolean isOccupied) {
+        Connection conn = null;
+        try {
+            conn = db.getConnection();
+            String sqlCommand = "UPDATE veterinarians SET isOccupied = ? WHERE id = ?";
+            PreparedStatement st = conn.prepareStatement(sqlCommand);
+
+            st.setBoolean(1, isOccupied);
+            st.setInt(2, id);
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
 
 }

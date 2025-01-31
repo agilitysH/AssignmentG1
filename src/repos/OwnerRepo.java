@@ -79,6 +79,7 @@ public class OwnerRepo implements IOwnerRepo{
                 owner.setPhoneNumber(rs.getInt("phoneNumber"));
                 owner.setNumberOfPets(rs.getInt("numberOfPets"));
                 owner.setGender(rs.getString("gender"));
+                owners.add(owner);
             }
             return owners;
 
@@ -89,4 +90,72 @@ public class OwnerRepo implements IOwnerRepo{
         }
         return null;
     }
+    @Override
+    public boolean updateOwner(Owner owner) {
+        Connection conn = null;
+        try {
+            conn = db.getConnection();
+            String sqlCommand = "UPDATE owners SET name = ?, email = ?, age = ?, phonenumber = ?, gender = ? WHERE id = ?";
+            PreparedStatement st = conn.prepareStatement(sqlCommand);
+
+            st.setString(1, owner.getName());
+            st.setString(2, owner.getEmail());
+            st.setInt(3, owner.getAge());
+            st.setInt(4, owner.getPhoneNumber());
+            st.setString(5, owner.getGender());
+            st.setInt(6, owner.getId());
+
+            int rowsUpdated = st.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    @Override
+    public boolean deleteOwner(int id) {
+        Connection conn = null;
+        try {
+            conn = db.getConnection();
+            String sqlCommand = "DELETE FROM owners WHERE id = ?";
+            PreparedStatement st = conn.prepareStatement(sqlCommand);
+
+            st.setInt(1, id);
+
+            int rowsDeleted = st.executeUpdate();
+            return rowsDeleted > 0;
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateOwnerPets(int ownerId, int petsDelta) {
+        Connection con = null;
+        try {
+            con = db.getConnection();
+            String sqlCommand = "UPDATE owners SET numberofpets = numberofpets + ? WHERE id = ?";
+            PreparedStatement st = con.prepareStatement(sqlCommand);
+            st.setInt(1, petsDelta);
+            st.setInt(2, ownerId);
+
+            int rowsAffected = st.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+
 }

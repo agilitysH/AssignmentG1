@@ -11,8 +11,21 @@ public class Animal {
 
     private String gender;
     private int ownerId;
-    private String appointment;
+    private String appointment = "Not appointed";
     private List<String> medicalHistory;
+    private int veterinarianId = 0;
+
+    public void counterDecrease(){
+        petId--;
+    }
+
+    public int getVeterinarianId() {
+        return veterinarianId;
+    }
+
+    public void setVeterinarianId(int veterinarianId) {
+        this.veterinarianId = veterinarianId;
+    }
 
     public Animal() {
         petId = ++petIdCounter;
@@ -61,6 +74,10 @@ public class Animal {
         return ownerId;
     }
 
+    public String getAppointment() {
+        return appointment;
+    }
+
     public int getPetId() {
         return petId;
     }
@@ -101,9 +118,21 @@ public class Animal {
         return medicalHistory;
     }
 
-    @Override
-    public String toString() {
-        return "Animal petId= " + petId + ", name= " + name + ", species= " + species + ", age= " + age + ", gender= " + gender + ", ownerId= " + ownerId + ", appointment= " + appointment + ", medicalHistory= " + medicalHistory;
+    public String getMedicalHistoryToString() {
+        StringBuilder sb = new StringBuilder();
+        for (String record : medicalHistory) {
+            sb.append(record);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
+    @Override
+    public String toString() {
+        return "Animal petId= " + petId + ", name= " + name + ", species= " + species + ", age= " + age + ", gender= " + gender + ", ownerId= " + ownerId + ", appointment= " + appointment;
+    }
+
+    public void setMedicalHistory(List<String> medicalHistory) {
+        this.medicalHistory = medicalHistory;
+    }
 }

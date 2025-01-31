@@ -1,5 +1,12 @@
 package classes;
 public class Veterinarian extends Person{
+    public boolean isOccupied() {
+        return isOccupied;
+    }
+
+    public void setOccupied(boolean occupied) {
+        isOccupied = occupied;
+    }
 
     private boolean isOccupied;
 
@@ -22,7 +29,7 @@ public class Veterinarian extends Person{
     }
 
     public void service(Animal pet) {
-        pet.setAppointment("Appointed by Classes.Veterinarian " + getName());
+        pet.setAppointment("Appointed by Veterinarian " + getName());
     }
 
     public void cancelService(Animal pet) {
@@ -31,8 +38,13 @@ public class Veterinarian extends Person{
     }
 
     public void serviceFinished(Animal pet) {
-        pet.addMedicalHistory("Treated by Classes.Veterinarian " + getName());
+        pet.addMedicalHistory("Treated by Veterinarian " + getName());
         cancelService(pet);
+    }
+
+    @Override
+    public String toString() {
+        return "Owner id = " + getId() + " name = " + getName() + " email = " + getEmail() + " age = " + getAge() + " phone number = " + getPhoneNumber() + " gender = " + getGender() + " is occupied = " + (isOccupied? "occupied" : "not occupied");
     }
 
 }

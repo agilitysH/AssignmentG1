@@ -16,6 +16,7 @@ abstract public class Person {
         this.email = email;
         this.age = age;
         this.phoneNumber = phoneNumber;
+        this.gender = gender;
     }
 
     public String getGender() {
@@ -26,7 +27,9 @@ abstract public class Person {
         this.gender = gender;
     }
 
-
+    public void counterDecrease(){
+        idCounter--;
+    }
 
     public String getName() {
         return name;
