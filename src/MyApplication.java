@@ -282,7 +282,7 @@ public final class MyApplication {
         getAllOwnersMenu();
         System.out.println("Select an owner id: ");
         int id = scanner.nextInt();
-        animalController.getAnimalsByOwnerId(id);
+        System.out.println(animalController.getAnimalsByOwnerId(id));
         System.out.println("All animals showed!");
     }
 

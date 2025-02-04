@@ -84,7 +84,6 @@ public class AnimalController implements IAnimalController {
                     .append(", Gender: ").append(animal.getGender())
                     .append(", Owner ID: ").append(animal.getOwnerId())
                     .append(", Appointment: ").append(animal.getAppointment())
-                    .append(", Medical History: ").append(animal.getMedicalHistory())
                     .append("\n");
         }
         return sb.toString();

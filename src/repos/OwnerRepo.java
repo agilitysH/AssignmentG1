@@ -15,14 +15,15 @@ public class OwnerRepo implements IOwnerRepo{
         Connection conn = null;
         try {
             conn=db.getConnection();
-            String sqlCommand = "INSERT INTO owners(id,name,email, age,phonenumber, gender) VALUES(?, ?, ?, ?,?, ?)";
+            String sqlCommand = "INSERT INTO owners(id,name,email, age,phonenumber, numberofpets, gender) VALUES(?, ?, ?, ?,?, ?,?)";
             PreparedStatement st = conn.prepareStatement(sqlCommand);
             st.setInt(1, owner.getId());
             st.setString(2, owner.getName());
             st.setString(3, owner.getEmail());
             st.setInt(4, owner.getAge());
             st.setInt(5, owner.getPhoneNumber());
-            st.setString(6, owner.getGender());
+            st.setInt(6, owner.getNumberOfPets());
+            st.setString(7, owner.getGender());
             st.executeUpdate();
             return true;
         } catch (SQLException e) {
