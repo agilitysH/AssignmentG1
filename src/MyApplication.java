@@ -1,12 +1,9 @@
 import classes.*;
+import controllers.UserController;
 import controllers.interfaces.IOwnerController;
-import repos.AnimalRepo;
-import repos.interfaces.IOwnerRepo;
+import controllers.interfaces.IUserController;
 import controllers.interfaces.IAnimalController;
 import controllers.interfaces.IVeterinarianController;
-import repos.interfaces.IVeterinarianRepo;
-import repos.interfaces.IAnimalRepo;
-
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -15,209 +12,269 @@ public final class MyApplication {
     private final IVeterinarianController veterinarianController;
     private final IAnimalController animalController;
     private final Scanner scanner = new Scanner(System.in);
-    public MyApplication(IOwnerController ownerController, IVeterinarianController veterinarianController, IAnimalController animalController) {
+    private final IUserController userController;
+
+    public MyApplication(IOwnerController ownerController, IVeterinarianController veterinarianController, IAnimalController animalController, IUserController userController) {
+        this.userController = userController;
         this.ownerController = ownerController;
         this.veterinarianController = veterinarianController;
         this.animalController = animalController;
     }
 
-    private void mainMenu() {
-        System.out.println();
-        System.out.println("Welcome to My Application");
-        System.out.println("Select one of the following options:");
-        System.out.println("1. Owner Menu");
-        System.out.println("2. Veterinarian Menu");
-        System.out.println("3. Animal Menu");
-        System.out.println("0. Exit");
-        System.out.println();
-        System.out.print("Select an option (1-3): ");
+    private User user;
 
+    private boolean loginMenu() {
+        System.out.println("Please enter your login: ");
+        String login = scanner.next();
+
+        scanner.nextLine();
+
+        System.out.println("Please enter your password: ");
+        String password = scanner.nextLine();
+
+        try {
+            User user = userController.getUser(login);
+
+            if (user != null) {
+                if (user.getPassword().equals(password)) {
+                    this.user = user;
+                    return true;
+                } else {
+                    System.out.println("Invalid password, please try again");
+                }
+            } else {
+                System.out.println("No such user exists, please try again");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
-    public void start() {
+    private void registerMenu() {
+        scanner.nextLine();
+        System.out.println("Enter your login ");
+        String login = scanner.nextLine();
+        System.out.println("Enter your password ");
+        String password = scanner.nextLine();
+        userController.createUser(login, password, 1);
+        this.user = userController.getUser(login);
+        createOwnerMenu();
+    }
+
+
+    private void userMenu() {
         while (true) {
-            mainMenu();
+            System.out.println();
+            System.out.println("Select one of the following options:");
+            System.out.println("1. View unassigned pets");
+            System.out.println("2. View your pets");
+            System.out.println("3. Adopt pet");
+            System.out.println("0. Exit");
+            System.out.print("Select an option (0-3): ");
+
             try {
                 int option = scanner.nextInt();
+                scanner.nextLine();
+
                 switch (option) {
                     case 1:
-                        ownerMenu();
+                        showAllPetsMenu();
                         break;
                     case 2:
-                        veterinarianMenu();
+                        showAllPetsMenu();
                         break;
                     case 3:
-                        animalMenu();
+                        assignOwnerMenu();
                         break;
-                    default:
+                    case 0:
                         return;
+                    default:
+                        System.out.println("Invalid option! Please select a valid option.");
                 }
-            } catch (InputMismatchException e) {
-                System.out.println("Please enter a valid option!" + e);
-                scanner.nextLine();
                 pressAnyKeyToContinue();
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine();
             }
-            System.out.println("----------------------------------------");
         }
     }
 
-    private void ownerMenu() {
-        System.out.println();
-        System.out.println("Owner Menu:");
-        System.out.println("1. Create new owner");
-        System.out.println("2. Get owner by id");
-        System.out.println("3. Get all owners");
-        System.out.println("4. Update owner by id");
-        System.out.println("5. Delete owner by id");
-        System.out.println("6. Show owner's pets");
-        System.out.println("0. Back to main menu");
-        System.out.print("Select an option (0-3): ");
+    private void employeeMenu() {
+        while (true) {
+            System.out.println();
+            System.out.println("Select one of the following options:");
+            System.out.println("1. View all animals");
+            System.out.println("2. Get medical history of an animal");
+            System.out.println("3. Set appointment");
+            System.out.println("4. Cancel appointment");
+            System.out.println("5. Finish appointment");
+            System.out.println("6. Show owner of an animal");
+            System.out.println("0. Exit");
+            System.out.print("Select an option (0-6): ");
 
-        try {
-            int option = scanner.nextInt();
-            switch (option) {
+            try {
+                int option = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (option) {
+                    case 1:
+                        getAllAnimalsMenu();
+                        break;
+                    case 2:
+                        getMedicalHistoryMenu();
+                        break;
+                    case 3:
+                        assignVeterinarianMenu();
+                        break;
+                    case 4:
+                        cancelAssignmentMenu();
+                        break;
+                    case 5:
+                        finishAssignmentMenu();
+                        break;
+                    case 6:
+                        showOwnerMenu();
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        System.out.println("Invalid option! Please select a valid option.");
+                }
+                pressAnyKeyToContinue();
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine();
+            }
+        }
+    }
+
+    private void adminMenu() {
+        while (true) {
+            System.out.println();
+            System.out.println("Select one of the following options: ");
+            System.out.println("1. Create animal");
+            System.out.println("2. Get all users");
+            System.out.println("3. Get all owners");
+            System.out.println("4. Get all veterinarians:");
+            System.out.println("5. Get all animals");
+            System.out.println("6. Update owner");
+            System.out.println("7. Update animal");
+            System.out.println("8. Update veterinarian");
+            System.out.println("9. Delete owner");
+            System.out.println("10. Delete veterinarian");
+            System.out.println("11. Delete animal");
+            System.out.println("12. Create veterinarian account");
+            System.out.println("13. Get owner by id");
+            System.out.println("14. Get veterinarian by id");
+            System.out.println("15. Get animal by id");
+            System.out.println("0. Exit admin menu");
+
+            try {
+                System.out.print("Enter your choice: ");
+                int option = scanner.nextInt();
+                scanner.nextLine();
+
+                switch (option) {
+                    case 1:
+                        createAnimalMenu();
+                        break;
+                    case 2:
+                        getAllUsersMenu();
+                        break;
+                    case 3:
+                        getAllOwnersMenu();
+                        break;
+                    case 4:
+                        getAllVeterinariansMenu();
+                        break;
+                    case 5:
+                        getAllAnimalsMenu();
+                        break;
+                    case 6:
+                        updateOwnerMenu();
+                        break;
+                    case 7:
+                        updateAnimalMenu();
+                        break;
+                    case 8:
+                        updateVeterinarianMenu();
+                        break;
+                    case 9:
+                        deleteOwnerMenu();
+                        break;
+                    case 10:
+                        deleteVeterinarianMenu();
+                        break;
+                    case 11:
+                        deleteAnimalMenu();
+                        break;
+                    case 12:
+                        registerVeterinarianMenu();
+                        break;
+                    case 13:
+                        getOwnerById();
+                        break;
+                    case 14:
+                        getVeterinarianById();
+                        break;
+                    case 15:
+                        getAnimalById();
+                        break;
+                    case 0:
+                        return;
+                    default:
+                        System.out.println("Invalid option! Please select a valid option.");
+                }
+                pressAnyKeyToContinue();
+            } catch (Exception e) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine();
+            }
+        }
+    }
+    public void start() {
+        boolean app = true;
+        while (app) {
+            boolean state = true;
+            System.out.println("Welcome! \nWhat would you like to do?:\n1. LogIn\n2. Register\n3.Exit");
+            int choice = scanner.nextInt();
+            while (state) {
+                switch (choice) {
+                    case 1:
+                        while (state) {
+                            if (loginMenu()) {
+                                state = false;
+                            }
+                            pressAnyKeyToContinue();
+                        }
+                        break;
+                    case 2:
+                        registerMenu();
+                        state = false;
+                        break;
+                    case 3:
+                        app = false;
+                        break;
+                    default:
+                        System.out.println("Invalid option! Please select a valid option!");
+                }
+            }
+
+            switch (user.getAccessLevel()) {
                 case 1:
-                    createOwnerMenu();
+                    userMenu();
                     break;
                 case 2:
-                    getOwnerById();
+                    employeeMenu();
                     break;
                 case 3:
-                    getAllOwnersMenu();
+                    adminMenu();
                     break;
-                case 4:
-                    updateOwnerMenu();
-                    break;
-                case 5:
-                    deleteOwnerMenu();
-                    break;
-                case 6:
-                    showAllPetsMenu();
-                    break;
-                case 0:
-                    return;
-                default:
-                    System.out.println("Invalid option! Please select a valid option.");
             }
-        } catch (InputMismatchException e) {
-            System.out.println("Please enter a valid option!" + e);
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            state = true;
         }
-        pressAnyKeyToContinue();
     }
-    private void animalMenu() {
-        System.out.println();
-        System.out.println("Animal Menu:");
-        System.out.println("1. Create new animal");
-        System.out.println("2. Get animal by id");
-        System.out.println("3. Get all animals");
-        System.out.println("4. Update animal by id");
-        System.out.println("5. Delete animal by id");
-        System.out.println("6. Show owner of an animal");
-        System.out.println("7. Give ownership");
-        System.out.println("0. Back to main menu");
-        System.out.print("Select an option (0-3): ");
-
-        try {
-            int option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    createAnimalMenu();
-                    break;
-                case 2:
-                    getAnimalById();
-                    break;
-                case 3:
-                    getAllAnimalsMenu();
-                    break;
-                case 4:
-                    updateAnimalMenu();
-                    break;
-                case 5:
-                    deleteAnimalMenu();
-                    break;
-                case 6:
-                    showOwnerMenu();
-                    break;
-                case 7:
-                    assignOwnerMenu();
-                    break;
-                case 0:
-                    return;
-                default:
-                    System.out.println("Invalid option! Please select a valid option.");
-            }
-        } catch (InputMismatchException e) {
-            System.out.println("Please enter a valid option!" + e);
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        pressAnyKeyToContinue();
-    }
-    private void veterinarianMenu() {
-        System.out.println();
-        System.out.println("Veterinarian Menu:");
-        System.out.println("1. Creat new veterinarian");
-        System.out.println("2. Get veterinarian by id");
-        System.out.println("3. Get all veterinarians");
-        System.out.println("4. Update veterinarian by id");
-        System.out.println("5. Delete veterinarian by id");
-        System.out.println("6. Get medical history of pet");
-        System.out.println("7. Assign local veterinarian");
-        System.out.println("8. Cancel existed appointment");
-        System.out.println("9. Finish appointment");
-        System.out.println("0. Back to main menu");
-        System.out.print("Select an option (0-3): ");
-
-        try {
-            int option = scanner.nextInt();
-            switch (option) {
-                case 1:
-                    createVeterinarianMenu();
-                    break;
-                case 2:
-                    getVeterinarianById();
-                    break;
-                case 3:
-                    getAllVeterinariansMenu();
-                    break;
-                case 4:
-                    updateVeterinarianMenu();
-                    break;
-                case 5:
-                    deleteVeterinarianMenu();
-                    break;
-                case 6:
-                    getMedicalHistoryMenu();
-                    break;
-                case 7:
-                    assignVeterinarianMenu();
-                    break;
-                case 8:
-                    cancelAssignmentMenu();
-                    break;
-                case 9:
-                    finishAssignmentMenu();
-                    break;
-                case 0:
-                    return;
-                default:
-                    System.out.println("Invalid option! Please select a valid option.");
-            }
-        } catch (InputMismatchException e) {
-            System.out.println("Please enter a valid option!" + e);
-            scanner.nextLine();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        pressAnyKeyToContinue();
-    }
-
 
 
 
@@ -279,11 +336,9 @@ public final class MyApplication {
         System.out.println(response);
     }
     private void showAllPetsMenu() {
-        getAllOwnersMenu();
-        System.out.println("Select an owner id: ");
-        int id = scanner.nextInt();
+        int id = user.getId();
         animalController.getAnimalsByOwnerId(id);
-        System.out.println("All animals showed!");
+        System.out.println("All pets showed!");
     }
 
 
@@ -363,25 +418,18 @@ public final class MyApplication {
 
     }
     private void assignOwnerMenu() {
-        getAllAnimalsMenu();
+        System.out.println(animalController.getAnimalsWithoutOwner());
         System.out.println("Please enter an animal id: ");
         int id = scanner.nextInt();
-
-        System.out.println("Please enter owner id: ");
-        int ownerId = scanner.nextInt();
+        int ownerId = user.getId();
 
         Owner owner = ownerController.getOwnerById(ownerId);
 
         if (owner.getNumberOfPets() >= 20 || owner.getAge() < 10) {
-            System.out.println("Owner is not deemed okay to have pets from our service");
-        } else {
-            if (animalController.getAnimalById(id).getOwnerId() != 0) {
-                int previousOwnerId = animalController.getAnimalById(id).getOwnerId();
-                System.out.println("Decreasing pet count for the previous owner");
-                ownerController.updateOwnerPets(previousOwnerId, -1);
-            }
+            System.out.println("You are not deemed okay to have pets from our service");
+        }
+        else {
             String response = animalController.updateOwnerId(id, ownerId);
-            System.out.println("Increasing pet count for the new owner");
             ownerController.updateOwnerPets(ownerId, 1);
             System.out.println(response);
         }
@@ -532,6 +580,18 @@ public final class MyApplication {
     }
 
 
+    private void getAllUsersMenu(){
+        String response = userController.getAllUsers();
+        System.out.println(response);
+    }
+    private void registerVeterinarianMenu() {
+        System.out.println("Enter login ");
+        String login = scanner.nextLine();
+        System.out.println("Enter password ");
+        String password = scanner.nextLine();
+        userController.createUser(login, password, 2);
+        createVeterinarianMenu();
+    }
 
     private void pressAnyKeyToContinue() {
         System.out.println("Press any key to continue...");
