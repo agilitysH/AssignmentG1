@@ -8,6 +8,12 @@ public class Veterinarian extends Person{
         isOccupied = occupied;
     }
 
+    private static int orderId;
+
+    public void increaseOrderId() {
+        orderId++;
+    }
+
     private boolean isOccupied;
 
     private int amountOfAppointments = 0;

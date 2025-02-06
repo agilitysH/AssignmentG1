@@ -82,7 +82,7 @@ public class VeterinarianRepo implements IVeterinarianRepo {
                 veterinarian.setAge(rs.getInt("age"));
                 veterinarian.setPhoneNumber(rs.getInt("phoneNumber"));
                 veterinarian.setGender(rs.getString("gender"));
-                veterinarian.setOccupied(rs.getBoolean("isOccupied")); // Set the isOccupied field
+                veterinarian.setOccupied(rs.getBoolean("isOccupied"));
                 veterinarians.add(veterinarian);
             }
             return veterinarians;
@@ -101,14 +101,12 @@ public class VeterinarianRepo implements IVeterinarianRepo {
             conn = db.getConnection();
             String sqlCommand = "UPDATE veterinarians SET name = ?, email = ?, age = ?, phonenumber = ?, gender = ? WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sqlCommand);
-
             st.setString(1, veterinarian.getName());
             st.setString(2, veterinarian.getEmail());
             st.setInt(3, veterinarian.getAge());
             st.setInt(4, veterinarian.getPhoneNumber());
             st.setString(5, veterinarian.getGender());
             st.setInt(6, veterinarian.getId());
-
             int rowsUpdated = st.executeUpdate();
             return rowsUpdated > 0;
         } catch (SQLException | ClassNotFoundException e) {
@@ -141,7 +139,6 @@ public class VeterinarianRepo implements IVeterinarianRepo {
             conn = db.getConnection();
             String sqlCommand = "UPDATE veterinarians SET isOccupied = ? WHERE id = ?";
             PreparedStatement st = conn.prepareStatement(sqlCommand);
-
             st.setBoolean(1, isOccupied);
             st.setInt(2, id);
 
@@ -152,7 +149,5 @@ public class VeterinarianRepo implements IVeterinarianRepo {
         }
         return false;
     }
-
-
-
 }
+
