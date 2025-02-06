@@ -4,11 +4,11 @@ abstract public class Person {
     private String email;
     private int phoneNumber;
     private int age;
-    private static int idCounter = 0;
+    private static int idCounter = 1;
     private int id;
     private String gender;
     public Person() {
-        id = ++idCounter;
+        id = idCounter++;
     }
     public Person(String name, String email, int age, int phoneNumber, String gender) {
         this();

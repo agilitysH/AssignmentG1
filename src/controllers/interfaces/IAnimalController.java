@@ -21,4 +21,6 @@ public interface IAnimalController {
 
     String updateVeterinarianId(int petId, int veterinarianId);
     String addMedicalHistory(int petId, String newRecord);
+
+    String getAnimalsWithoutOwner();
 }

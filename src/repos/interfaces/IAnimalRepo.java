@@ -24,4 +24,6 @@ public interface IAnimalRepo {
     boolean updateVeterinarianId(int petId, int veterinarianId);
 
     boolean addMedicalHistory(int petId, String newRecord);
+
+    List<Animal> getAllAnimalsWithoutOwner();
 }

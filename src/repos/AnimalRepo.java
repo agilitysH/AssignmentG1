@@ -17,8 +17,9 @@ public class AnimalRepo implements IAnimalRepo {
 
     @Override
     public boolean createAnimal(Animal animal) {
+        Connection con = null;
         try {
-            Connection con = null;
+
             con = db.getConnection();
             String sqlCommand = "INSERT INTO animals(petId,name,species,age, gender, ownerid) VALUES(?, ?, ?, ?,?,?)";
             PreparedStatement st = con.prepareStatement(sqlCommand);
@@ -278,6 +279,45 @@ public class AnimalRepo implements IAnimalRepo {
             }
         }
         return false;
+    }
+
+    @Override
+    public List<Animal> getAllAnimalsWithoutOwner() {
+        Connection con = null;
+        try {
+            con = db.getConnection();
+            String sqlCommand = "SELECT petid, name, species, age, gender, ownerid, appointment, medicalhistory FROM animals where ownerid = 0";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sqlCommand);
+            List<Animal> animals = new ArrayList<>();
+            while (rs.next()) {
+                Animal animal = new Animal();
+                animal.setPetId(rs.getInt("petid"));
+                animal.setName(rs.getString("name"));
+                animal.setSpecies(rs.getString("species"));
+                animal.setAge(rs.getInt("age"));
+                animal.setGender(rs.getString("gender"));
+                animal.setOwnerId(rs.getInt("ownerid"));
+                animal.setAppointment(rs.getString("appointment"));
+                String medicalHistoryStr = rs.getString("medicalhistory");
+                List<String> medicalHistory = new ArrayList<>();
+                if (medicalHistoryStr != null && !medicalHistoryStr.isEmpty()) {
+                    String[] historyItems = medicalHistoryStr.split(",");
+                    for (String item : historyItems) {
+                        medicalHistory.add(item.trim());
+                    }
+                }
+                animal.setMedicalHistory(medicalHistory);
+                animals.add(animal);
+            }
+            return animals;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

@@ -109,4 +109,24 @@ public class AnimalController implements IAnimalController {
         return (added? "Added" : "Failed to add medical history");
     }
 
+    @Override
+    public String getAnimalsWithoutOwner() {
+        List<Animal> animals = repo.getAllAnimalsWithoutOwner();
+        if (animals == null || animals.isEmpty()) {
+            return "No animals found!";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (Animal animal : animals) {
+            sb.append("Pet ID: ").append(animal.getPetId())
+                    .append(", Name: ").append(animal.getName())
+                    .append(", Species: ").append(animal.getSpecies())
+                    .append(", Age: ").append(animal.getAge())
+                    .append(", Gender: ").append(animal.getGender())
+                    .append(", Owner ID: ").append(animal.getOwnerId())
+                    .append(", Appointment: ").append(animal.getAppointment())
+                    .append("\n");
+        }
+        return sb.toString();
+    }
 }
+

@@ -1,6 +1,7 @@
 import controllers.*;
 import controllers.interfaces.IAnimalController;
 import controllers.interfaces.IOwnerController;
+import controllers.interfaces.IUserController;
 import controllers.interfaces.IVeterinarianController;
 import data.interfaces.IDB;
 import repos.*;
@@ -8,6 +9,7 @@ import data.*;
 import classes.*;
 import repos.interfaces.IAnimalRepo;
 import repos.interfaces.IOwnerRepo;
+import repos.interfaces.IUserRepo;
 import repos.interfaces.IVeterinarianRepo;
 
 public class Main {
@@ -19,7 +21,9 @@ public class Main {
         IOwnerController ownerController = new OwnerController(ownerRepo);
         IVeterinarianRepo veterinarianRepo = new VeterinarianRepo(db);
         IVeterinarianController veterinarianController = new VeterinarianController(veterinarianRepo);
-        MyApplication app = new MyApplication(ownerController,veterinarianController,animalController);
+        IUserRepo userRepo = new UserRepo(db);
+        IUserController userController = new UserController(userRepo);
+        MyApplication app = new MyApplication(ownerController,veterinarianController,animalController,userController);
         app.start();
 
 
