@@ -1,10 +1,14 @@
 import classes.*;
 import controllers.UserController;
-import controllers.interfaces.IOwnerController;
-import controllers.interfaces.IUserController;
-import controllers.interfaces.IAnimalController;
-import controllers.interfaces.IVeterinarianController;
+import controllers.interfaces.*;
+import java.util.InputMismatchException;
 import java.io.IOException;
+import java.util.Scanner;
+import java.sql.SQLException;
+import controllers.OrderController;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 public final class MyApplication {
@@ -13,12 +17,14 @@ public final class MyApplication {
     private final IAnimalController animalController;
     private final Scanner scanner = new Scanner(System.in);
     private final IUserController userController;
+    private final IOrderController orderController;
 
-    public MyApplication(IOwnerController ownerController, IVeterinarianController veterinarianController, IAnimalController animalController, IUserController userController) {
+    public MyApplication(IOwnerController ownerController, IVeterinarianController veterinarianController, IAnimalController animalController, IUserController userController, IOrderController orderController) {
         this.userController = userController;
         this.ownerController = ownerController;
         this.veterinarianController = veterinarianController;
         this.animalController = animalController;
+        this.orderController = orderController;
     }
 
     private User user;
@@ -233,6 +239,7 @@ public final class MyApplication {
             }
         }
     }
+
     public void start() {
         boolean app = true;
         while (app) {
@@ -277,7 +284,6 @@ public final class MyApplication {
     }
 
 
-
     private void createOwnerMenu() {
         System.out.println("Please enter name: ");
         String name = scanner.next();
@@ -293,22 +299,24 @@ public final class MyApplication {
         String response = ownerController.createOwner(name, email, age, phoneNumber, gender);
         System.out.println(response);
     }
+
     private void getOwnerById() {
         System.out.println("Please enter a owner id: ");
         int id = scanner.nextInt();
         if (ownerController.getOwnerById(id) != null) {
             String response = "Showed <3";
             System.out.println(response);
-        }
-        else{
+        } else {
             System.out.println("Not found");
         }
 
     }
+
     private void getAllOwnersMenu() {
         String response = ownerController.getAllOwners();
         System.out.println(response);
     }// owner hud
+
     private void updateOwnerMenu() {
         getAllOwnersMenu();
         System.out.println("Please enter an owner id: ");
@@ -328,6 +336,7 @@ public final class MyApplication {
         System.out.println(response);
 
     }
+
     private void deleteOwnerMenu() {
         getAllOwnersMenu();
         System.out.println("Please enter an owner id: ");
@@ -335,6 +344,7 @@ public final class MyApplication {
         String response = ownerController.deleteOwner(id);
         System.out.println(response);
     }
+
     private void showAllPetsMenu() {
         int id = user.getId();
         animalController.getAnimalsByOwnerId(id);
@@ -342,13 +352,11 @@ public final class MyApplication {
     }
 
 
-
-
     private void createAnimalMenu() {
         System.out.println("Please enter animal name: ");
         String animalName = scanner.next();
         System.out.println("Please enter animal species: ");
-        String animalSpecies= scanner.next();
+        String animalSpecies = scanner.next();
         System.out.println("Please enter age: ");
         int age = scanner.nextInt();
         System.out.println("Please enter gender: ");
@@ -356,6 +364,7 @@ public final class MyApplication {
         String response = animalController.createAnimal(animalName, animalSpecies, age, gender);
         System.out.println(response);
     }
+
     private void getAnimalById() {
         System.out.println("Please enter an animal id: ");
         int id = scanner.nextInt();
@@ -363,15 +372,16 @@ public final class MyApplication {
 
             String response = animalController.getAnimalById(id).toString() + "\n" + "Showed <3";
             System.out.println(response);
-        }
-        else{
+        } else {
             System.out.println("Not found");
         }
     }
-    private void getAllAnimalsMenu()  {
+
+    private void getAllAnimalsMenu() {
         String response = animalController.getAllAnimals();
         System.out.println(response);
     }
+
     private void updateAnimalMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
@@ -380,7 +390,7 @@ public final class MyApplication {
         System.out.println("Please enter animal name: ");
         String animalName = scanner.next();
         System.out.println("Please enter animal species: ");
-        String animalSpecies= scanner.next();
+        String animalSpecies = scanner.next();
         System.out.println("Please enter age: ");
         int age = scanner.nextInt();
         System.out.println("Please enter gender: ");
@@ -388,13 +398,15 @@ public final class MyApplication {
         String response = animalController.updateAnimal(id, animalName, animalSpecies, age, gender);
 
     } // animal hud
-    private void deleteAnimalMenu(){
+
+    private void deleteAnimalMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
         int id = scanner.nextInt();
         String response = animalController.deleteAnimal(id);
         System.out.println(response);
     }
+
     private void showOwnerMenu() {
         getAllAnimalsMenu();
         System.out.println("Select an animal id: ");
@@ -402,21 +414,18 @@ public final class MyApplication {
         Animal animal;
         if (animalController.getAnimalById(id) != null) {
             animal = animalController.getAnimalById(id);
-            int ownerId =animal.getOwnerId();
+            int ownerId = animal.getOwnerId();
             if (ownerController.getOwnerById(ownerId) != null) {
                 String response = ownerController.getOwnerById(ownerId).toString();
                 System.out.println(response);
-            }
-            else
+            } else
                 System.out.println("Not found");
-        }
-        else
+        } else
             System.out.println("Not found");
 
 
-
-
     }
+
     private void assignOwnerMenu() {
         System.out.println(animalController.getAnimalsWithoutOwner());
         System.out.println("Please enter an animal id: ");
@@ -427,14 +436,12 @@ public final class MyApplication {
 
         if (owner.getNumberOfPets() >= 20 || owner.getAge() < 10) {
             System.out.println("You are not deemed okay to have pets from our service");
-        }
-        else {
+        } else {
             String response = animalController.updateOwnerId(id, ownerId);
             ownerController.updateOwnerPets(ownerId, 1);
             System.out.println(response);
         }
     }
-
 
 
     private void createVeterinarianMenu() {
@@ -451,22 +458,24 @@ public final class MyApplication {
         String response = veterinarianController.createVeterinarian(name, email, age, phoneNumber, gender);
         System.out.println(response);
     }
+
     private void getAllVeterinariansMenu() {
         String response = veterinarianController.getAllVeterinarians();
         System.out.println(response);
     }
+
     private void getVeterinarianById() {
         System.out.println("Please enter a user id: ");
         int id = scanner.nextInt();
 
-        if(veterinarianController.getVeterinarianById(id) != null) {
+        if (veterinarianController.getVeterinarianById(id) != null) {
             String response = veterinarianController.getVeterinarianById(id).toString() + "\n" + "Showed <3";
             System.out.println(response);
-        }
-        else
+        } else
             System.out.println("Not found");
 
     }
+
     private void updateVeterinarianMenu() {
         getAllVeterinariansMenu();
         System.out.println("Please enter a veterinarian id: ");
@@ -484,6 +493,7 @@ public final class MyApplication {
         String response = veterinarianController.updateVeterinarian(id, name, email, age, phoneNumber, gender);
         System.out.println(response);
     }
+
     private void deleteVeterinarianMenu() {
         getAllVeterinariansMenu();
         System.out.println("Please enter a veterinarian id: ");
@@ -491,6 +501,7 @@ public final class MyApplication {
         String response = veterinarianController.deleteVeterinarian(id);
         System.out.println(response);
     }// veterinarian hud
+
     private void getMedicalHistoryMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
@@ -499,10 +510,10 @@ public final class MyApplication {
             System.out.println(animalController.getAnimalById(id).getMedicalHistoryToString());
             System.out.println("Showed <3");
 
-        }
-        else
+        } else
             System.out.println("Failed to get medical history");
     }
+
     private void assignVeterinarianMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
@@ -525,6 +536,7 @@ public final class MyApplication {
             System.out.println(response);
         }
     }
+
     private void cancelAssignmentMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
@@ -550,6 +562,28 @@ public final class MyApplication {
             }
         } else {
             System.out.println("No such appointment exists");
+        }
+    }
+    public void Appointment() {
+        try {
+            System.out.println("1. Show all appointment IDs");
+            System.out.println("2. Show veterinarian and pet by appointment ID");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+            int choice = scanner.nextInt();
+            if (choice == 1) {
+                OrderController.printAllOrders();
+            } else if (choice == 2) {
+                System.out.print("Enter appointment ID: ");
+                int id = scanner.nextInt();
+                OrderController.printVetAndPetById(id);
+            }
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid input. Please enter a number.");
+            scanner.next(); // Очистка буфера ввода
+
+        } catch (SQLException e) {
+            System.out.println("Database connection error: " + e.getMessage());
         }
     }
     private void finishAssignmentMenu() {
@@ -580,10 +614,11 @@ public final class MyApplication {
     }
 
 
-    private void getAllUsersMenu(){
+    private void getAllUsersMenu() {
         String response = userController.getAllUsers();
         System.out.println(response);
     }
+
     private void registerVeterinarianMenu() {
         System.out.println("Enter login ");
         String login = scanner.nextLine();

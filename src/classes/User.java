@@ -5,6 +5,21 @@ public class User {
     private String password;
     private int accessLevel;
     private int id = Person.getIdCounter();
+    private String name;
+    private Role role;
+
+    public User(String name, Role role) {
+        this.name = name;
+        this.role = role;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public String getName() {
+        return name;
+    }
 
     public int getId() {
         return id;
@@ -61,4 +76,9 @@ public class User {
 
     }
     public User(){}
+
+    enum Role {
+        ADMIN, OWNER, EMPLOYEE;
+    }
+
 }

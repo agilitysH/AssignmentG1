@@ -1,5 +1,8 @@
 package classes;
-public class Veterinarian extends Person{
+import classes.Order;
+import java.util.ArrayList;
+import java.util.List;
+public class Veterinarian extends Person {
     public boolean isOccupied() {
         return isOccupied;
     }
@@ -16,15 +19,17 @@ public class Veterinarian extends Person{
 
     private boolean isOccupied;
 
-    private int amountOfAppointments = 0;
+    private int amountOfOrders = 0;
 
-    public int getAmountOfAppointments() {
-        return amountOfAppointments;
+    public int getAmountOforders() {
+        return amountOfOrders;
     }
 
-    public void setAmountOfAppointments(int amountOfAppointments) {
-        this.amountOfAppointments = amountOfAppointments;
+    public void setAmountOfOrders(int amountOfOrders) {
+        this.amountOfOrders = amountOfOrders;
     }
+
+    private List<Order> orders = new ArrayList<>();
 
     public Veterinarian() {
         super();
@@ -48,9 +53,16 @@ public class Veterinarian extends Person{
         cancelService(pet);
     }
 
-    @Override
-    public String toString() {
-        return "Owner id = " + getId() + " name = " + getName() + " email = " + getEmail() + " age = " + getAge() + " phone number = " + getPhoneNumber() + " gender = " + getGender() + " is occupied = " + (isOccupied? "occupied" : "not occupied");
+    public void addOrder(Order order) {
+        orders.add(order);
     }
 
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    @Override
+    public String toString() {
+        return "Owner id = " + getId() + " name = " + getName() + " email = " + getEmail() + " age = " + getAge() + " phone number = " + getPhoneNumber() + " gender = " + getGender() + " is occupied = " + (isOccupied ? "occupied" : "not occupied");
+    }
 }
