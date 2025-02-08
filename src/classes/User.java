@@ -1,24 +1,39 @@
 package classes;
 
+import jakarta.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id; // Теперь ID будет авто-генерироваться в базе
+
+    @Column(unique = true, nullable = false)
     private String login;
+
+    @Column(nullable = false)
     private String password;
-    private int accessLevel;
-    private int id = Person.getIdCounter();
-    private String name;
-    private Role role;
 
-    public User(String name, Role role) {
-        this.name = name;
-        this.role = role;
-    }
+    private int accessLevel; // Это можно заменить на роли
 
-    public Role getRole() {
-        return role;
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<Role> roles = new HashSet<>();
 
-    public String getName() {
-        return name;
+    public User() {}
+
+    public User(String login, String password, int accessLevel) {
+        this.login = login;
+        this.password = password;
+        this.accessLevel = accessLevel;
     }
 
     public int getId() {
@@ -29,20 +44,20 @@ public class User {
         this.id = id;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getLogin() {
         return login;
     }
 
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public int getAccessLevel() {
@@ -53,32 +68,19 @@ public class User {
         this.accessLevel = accessLevel;
     }
 
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 
     public boolean enterPassword(String password) {
-        if (password.equals(this.password)) {
-            return true;
-        }
-        return false;
+        return password.equals(this.password);
     }
-
 
     public boolean enterLogin(String login) {
-        if (login.equals(this.login)) {
-            return true;
-        }
-        return false;
+        return login.equals(this.login);
     }
-
-    public User(String login, String password, int accessLevel) {
-        this.login = login;
-        this.password = password;
-        this.accessLevel = accessLevel;
-
-    }
-    public User(){}
-
-    enum Role {
-        ADMIN, OWNER, EMPLOYEE;
-    }
-
 }
