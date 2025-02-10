@@ -85,19 +85,11 @@ public final class MyApplication {
                 scanner.nextLine();
 
                 switch (option) {
-                    case 1:
-                        showAllPetsMenu();
-                        break;
-                    case 2:
-                        showAllPetsMenu();
-                        break;
-                    case 3:
-                        assignOwnerMenu();
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        System.out.println("Invalid option! Please select a valid option.");
+                    case 1-> showAllPetsMenu();
+                    case 2-> showAllPetsMenu();
+                    case 3-> assignOwnerMenu();
+                    case 0-> return;
+                    default-> System.out.println("Invalid option! Please select a valid option.");
                 }
                 pressAnyKeyToContinue();
             } catch (Exception e) {
@@ -125,28 +117,14 @@ public final class MyApplication {
                 scanner.nextLine();
 
                 switch (option) {
-                    case 1:
-                        getAllAnimalsMenu();
-                        break;
-                    case 2:
-                        getMedicalHistoryMenu();
-                        break;
-                    case 3:
-                        assignVeterinarianMenu();
-                        break;
-                    case 4:
-                        cancelAssignmentMenu();
-                        break;
-                    case 5:
-                        finishAssignmentMenu();
-                        break;
-                    case 6:
-                        showOwnerMenu();
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        System.out.println("Invalid option! Please select a valid option.");
+                    case 1 -> getAllAnimalsMenu();
+                    case 2-> getMedicalHistoryMenu();
+                    case 3-> assignVeterinarianMenu();
+                    case 4-> cancelAssignmentMenu();
+                    case 5-> finishAssignmentMenu();
+                    case 6-> showOwnerMenu();
+                    case 0-> return;
+                    default -> System.out.println("Invalid option! Please select a valid option.");
                 }
                 pressAnyKeyToContinue();
             } catch (Exception e) {
@@ -183,55 +161,23 @@ public final class MyApplication {
                 scanner.nextLine();
 
                 switch (option) {
-                    case 1:
-                        createAnimalMenu();
-                        break;
-                    case 2:
-                        getAllUsersMenu();
-                        break;
-                    case 3:
-                        getAllOwnersMenu();
-                        break;
-                    case 4:
-                        getAllVeterinariansMenu();
-                        break;
-                    case 5:
-                        getAllAnimalsMenu();
-                        break;
-                    case 6:
-                        updateOwnerMenu();
-                        break;
-                    case 7:
-                        updateAnimalMenu();
-                        break;
-                    case 8:
-                        updateVeterinarianMenu();
-                        break;
-                    case 9:
-                        deleteOwnerMenu();
-                        break;
-                    case 10:
-                        deleteVeterinarianMenu();
-                        break;
-                    case 11:
-                        deleteAnimalMenu();
-                        break;
-                    case 12:
-                        registerVeterinarianMenu();
-                        break;
-                    case 13:
-                        getOwnerById();
-                        break;
-                    case 14:
-                        getVeterinarianById();
-                        break;
-                    case 15:
-                        getAnimalById();
-                        break;
-                    case 0:
-                        return;
-                    default:
-                        System.out.println("Invalid option! Please select a valid option.");
+                    case 1-> createAnimalMenu();
+                    case 2 -> getAllUsersMenu();
+                    case 3 -> getAllOwnersMenu();
+                    case 4 -> getAllVeterinariansMenu();
+                    case 5 -> getAllAnimalsMenu();
+                    case 6 -> updateOwnerMenu();
+                    case 7 -> updateAnimalMenu();
+                    case 8 -> updateVeterinarianMenu();
+                    case 9 -> deleteOwnerMenu();
+                    case 10 -> deleteVeterinarianMenu();
+                    case 11 -> deleteAnimalMenu();
+                    case 12 -> registerVeterinarianMenu();
+                    case 13 -> getOwnerById();
+                    case 14 -> getVeterinarianById();
+                    case 15 -> getAnimalById();
+                    case 0 -> return;
+                    default -> System.out.println("Invalid option! Please select a valid option.");
                 }
                 pressAnyKeyToContinue();
             } catch (Exception e) {
@@ -270,15 +216,9 @@ public final class MyApplication {
             }
 
             switch (user.getAccessLevel()) {
-                case 1:
-                    userMenu();
-                    break;
-                case 2:
-                    employeeMenu();
-                    break;
-                case 3:
-                    adminMenu();
-                    break;
+                case 1-> userMenu();
+                case 2->employeeMenu();
+                case 3->adminMenu();
             }
             state = true;
         }

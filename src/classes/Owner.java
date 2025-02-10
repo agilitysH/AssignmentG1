@@ -7,14 +7,11 @@ public class Owner extends Person {
 
     private int numberOfPets = 0;
     private List<Animal> pets = new ArrayList<>();
-    private List<Order> orders = new ArrayList<>();
+
     public void addPet(Animal pet) {
         pets.add(pet);
     }
 
-    public void addOrder(Order order) {
-        orders.add(order);
-    }
     public int getNumberOfPets() {
         return numberOfPets;
     }
@@ -22,8 +19,6 @@ public class Owner extends Person {
     public void setNumberOfPets(int numberOfPets) {
         this.numberOfPets = numberOfPets;
     }
-
-
 
     public Owner() {
         super();

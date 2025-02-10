@@ -11,25 +11,18 @@ public class Veterinarian extends Person {
         isOccupied = occupied;
     }
 
-    private static int orderId;
-
-    public void increaseOrderId() {
-        orderId++;
-    }
-
     private boolean isOccupied;
 
-    private int amountOfOrders = 0;
+    private int amountOfAppointments = 0;
 
-    public int getAmountOforders() {
-        return amountOfOrders;
+    public int getAmountOfAppointments() {
+        return amountOfAppointments;
     }
 
-    public void setAmountOfOrders(int amountOfOrders) {
-        this.amountOfOrders = amountOfOrders;
+    public void setAmountOfAppointments(int amountOfAppointments) {
+        this.amountOfAppointments = amountOfAppointments;
     }
 
-    private List<Order> orders = new ArrayList<>();
 
     public Veterinarian() {
         super();
@@ -51,14 +44,6 @@ public class Veterinarian extends Person {
     public void serviceFinished(Animal pet) {
         pet.addMedicalHistory("Treated by Veterinarian " + getName());
         cancelService(pet);
-    }
-
-    public void addOrder(Order order) {
-        orders.add(order);
-    }
-
-    public List<Order> getOrders() {
-        return orders;
     }
 
     @Override
