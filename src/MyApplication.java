@@ -5,8 +5,6 @@ import java.util.InputMismatchException;
 import java.io.IOException;
 import java.util.Scanner;
 import java.sql.SQLException;
-import controllers.OrderController;
-import controllers.OrderController;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,14 +16,13 @@ public final class MyApplication {
     private final IAnimalController animalController;
     private final Scanner scanner = new Scanner(System.in);
     private final IUserController userController;
-    private final IOrderController orderController;
 
     public MyApplication(IOwnerController ownerController, IVeterinarianController veterinarianController, IAnimalController animalController, IUserController userController, IOrderController orderController) {
         this.userController = userController;
         this.ownerController = ownerController;
         this.veterinarianController = veterinarianController;
         this.animalController = animalController;
-        this.orderController = orderController;
+
     }
 
     private User user;
@@ -117,7 +114,7 @@ public final class MyApplication {
                 scanner.nextLine();
 
                 switch (option) {
-                    case 1 -> getAllAnimalsMenu();
+                    case 1-> getAllAnimalsMenu();
                     case 2-> getMedicalHistoryMenu();
                     case 3-> assignVeterinarianMenu();
                     case 4-> cancelAssignmentMenu();
@@ -454,107 +451,76 @@ public final class MyApplication {
         } else
             System.out.println("Failed to get medical history");
     }
-
+    //changed
     private void assignVeterinarianMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
         int petId = scanner.nextInt();
         getAllVeterinariansMenu();
         System.out.println("Please enter a veterinarian id: ");
-        int id = scanner.nextInt();
+        int vetId = scanner.nextInt();
 
-        if (veterinarianController.getVeterinarianById(id).isOccupied()) {
-            String response = "Veterinarian already occupied";
-            System.out.println(response);
-        } else if (animalController.getAnimalById(petId).getAppointment() != null && !animalController.getAnimalById(petId).getAppointment().equals("Not appointed")) {
-            String response = "Animal already treated";
-            System.out.println(response);
-        } else {
-            veterinarianController.updateIsOccupied(id, true);
-            animalController.updateAppointment(petId, "Appointed by Veterinarian " + veterinarianController.getVeterinarianById(id).getName());
-            animalController.updateVeterinarianId(petId, id);
-            String response = "Appointment set";
-            System.out.println(response);
+        if (veterinarianController.getVeterinarianById(vetId).isOccupied()) {
+            System.out.println("Veterinarian already occupied");
+            return;
         }
+
+        if (orderService.getOrderByAnimalId(petId) != null) {
+            System.out.println("Animal already has an appointment");
+            return;
+        }
+
+        veterinarianController.updateIsOccupied(vetId, true);
+        Order newOrder = orderService.createOrder(vetId, petId);
+        animalController.updateVeterinarianId(petId, vetId);
+
+        System.out.println("Appointment set: " + newOrder);
     }
 
     private void cancelAssignmentMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
-        int id = scanner.nextInt();
+        int petId = scanner.nextInt();
 
-        Animal animal = animalController.getAnimalById(id);
-        if (animal == null) {
-            System.out.println("Animal not found.");
+        Order order = orderService.getOrderByAnimalId(petId);
+        if (order == null) {
+            System.out.println("No such appointment exists");
             return;
         }
 
-        if (animal.getAppointment() != null && !animal.getAppointment().equals("Not appointed")) {
-            int veterinarianId = animal.getVeterinarianId();
+        veterinarianController.updateIsOccupied(order.getVeterinarianId(), false);
+        orderService.deleteOrder(order.getAppointmentId());
+        animalController.updateVeterinarianId(petId, 0);
 
-            if (veterinarianController.getVeterinarianById(veterinarianId) != null) {
-                veterinarianController.updateIsOccupied(veterinarianId, false);
-                animalController.updateAppointment(id, "Not appointed");
-                animalController.updateVeterinarianId(id, 0);
-                String response = "Appointment cancelled";
-                System.out.println(response);
-            } else {
-                System.out.println("Veterinarian not found.");
-            }
-        } else {
-            System.out.println("No such appointment exists");
-        }
+        System.out.println("Appointment cancelled");
     }
-    public void Appointment() {
-        try {
-            System.out.println("1. Show all appointment IDs");
-            System.out.println("2. Show veterinarian and pet by appointment ID");
-            System.out.println("3. Exit");
-            System.out.print("Choose an option: ");
-            int choice = scanner.nextInt();
-            if (choice == 1) {
-                OrderController.printAllOrders();
-            } else if (choice == 2) {
-                System.out.print("Enter appointment ID: ");
-                int id = scanner.nextInt();
-                OrderController.printVetAndPetById(id);
-            }
-        } catch (InputMismatchException e) {
-            System.out.println("Invalid input. Please enter a number.");
-            scanner.next(); // Очистка буфера ввода
 
-        } catch (SQLException e) {
-            System.out.println("Database connection error: " + e.getMessage());
-        }
-    }
     private void finishAssignmentMenu() {
         getAllAnimalsMenu();
         System.out.println("Please enter an animal id: ");
-        int animalId = scanner.nextInt();
-        Animal animal = animalController.getAnimalById(animalId);
-        if (animal == null) {
-            System.out.println("Animal not found.");
+        int petId = scanner.nextInt();
+
+        Order order = orderService.getOrderByAnimalId(petId);
+        if (order == null) {
+            System.out.println("Appointment can't be finished.");
             return;
         }
-        if (animal.getAppointment() != null && !animal.getAppointment().equals("Not appointed")) {
-            Veterinarian veterinarian = veterinarianController.getVeterinarianById(animal.getVeterinarianId());
 
-            if (veterinarian == null) {
-                System.out.println("Veterinarian not found.");
-                return;
-            }
-            veterinarianController.updateIsOccupied(animal.getVeterinarianId(), false);
-            animalController.updateAppointment(animalId, "Not appointed");
-            animalController.updateVeterinarianId(animalId, 0);
-            animalController.addMedicalHistory(animalId, "Treated by " + veterinarian.getName());
-            System.out.println("Appointment finished.");
-        } else {
-            System.out.println("Appointment can't be finished.");
+        int vetId = order.getVeterinarianId();
+        Veterinarian veterinarian = veterinarianController.getVeterinarianById(vetId);
+        if (veterinarian == null) {
+            System.out.println("Veterinarian not found.");
+            return;
         }
 
+        veterinarianController.updateIsOccupied(vetId, false);
+        orderService.deleteOrder(order.getAppointmentId());
+        animalController.updateVeterinarianId(petId, 0);
+        animalController.addMedicalHistory(petId, "Treated by " + veterinarian.getName());
+
+        System.out.println("Appointment finished.");
     }
-
-
+  //changed
     private void getAllUsersMenu() {
         String response = userController.getAllUsers();
         System.out.println(response);

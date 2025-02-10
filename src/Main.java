@@ -23,13 +23,11 @@ public class Main {
         IAnimalRepo animalRepo = new AnimalRepo(db);
         AnimalController animalController = new AnimalController(animalRepo);
         IOwnerRepo ownerRepo = new OwnerRepo(db);
-        IOrderRepo orderRepo=new OrderRepo(db);
         IOwnerController ownerController = new OwnerController(ownerRepo);
         IVeterinarianRepo veterinarianRepo = new VeterinarianRepo(db);
         IVeterinarianController veterinarianController = new VeterinarianController(veterinarianRepo);
         IUserRepo userRepo = new UserRepo(db);
         IUserController userController = new UserController(userRepo);
-        OrderController orderController= new OrderController(orderRepo);
         MyApplication app = new MyApplication(ownerController,veterinarianController,animalController,userController, orderController);
         app.start();
     }
