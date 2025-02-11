@@ -1,78 +1,58 @@
-package controllers;
+package com.example.petadoption.controller;
+
+import com.example.petadoption.model.Veterinarian;
+import com.example.petadoption.service.VeterinarianService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
-import classes.Veterinarian;
-import repos.interfaces.IVeterinarianRepo;
-import controllers.interfaces.IVeterinarianController;
-public class VeterinarianController implements IVeterinarianController {
-    private final IVeterinarianRepo repo;
 
-    public VeterinarianController(IVeterinarianRepo repo) {
-        this.repo = repo;
+@RestController
+@RequestMapping("/api/veterinarians")
+public class VeterinarianController {
+    private final VeterinarianService veterinarianService;
+
+    public VeterinarianController(VeterinarianService veterinarianService) {
+        this.veterinarianService = veterinarianService;
     }
 
-    @Override
-    public String createVeterinarian(String name, String email, int age, int phoneNumber, String gender) {
-        Veterinarian veterinarian = new Veterinarian(name, email, age, phoneNumber, gender);
-        boolean created = repo.createVeterinarian(veterinarian);
-
-        return (created? "Created": "Creation failed");
+    @GetMapping
+    public ResponseEntity<List<Veterinarian>> getAllVeterinarians() {
+        return ResponseEntity.ok(veterinarianService.getAllVeterinarians());
     }
-    @Override
-    public Veterinarian getVeterinarianById(int id) {
-        Veterinarian veterinarian = repo.getVeterinarianById(id);
 
-        return veterinarian;
+    @GetMapping("/{id}")
+    public ResponseEntity<Veterinarian> getVeterinarianById(@PathVariable Long id) {
+        return veterinarianService.getVeterinarianById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
-    @Override
-    public String getAllVeterinarians() {
-        List<Veterinarian> veterinarians = repo.getAllVeterinarians();
-        if (veterinarians == null || veterinarians.isEmpty()) {
-            return "No veterinarians found!";
+
+    @PostMapping
+    public ResponseEntity<Veterinarian> createVeterinarian(@RequestBody Veterinarian veterinarian) {
+        return ResponseEntity.ok(veterinarianService.createVeterinarian(veterinarian));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Veterinarian> updateVeterinarian(@PathVariable Long id, @RequestBody Veterinarian veterinarian) {
+        return veterinarianService.updateVeterinarian(id, veterinarian)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteVeterinarian(@PathVariable Long id) {
+        if (veterinarianService.deleteVeterinarian(id)) {
+            return ResponseEntity.ok("Veterinarian deleted successfully");
         }
-        StringBuilder sb = new StringBuilder();
-        for (Veterinarian veterinarian : veterinarians) {
-            sb.append("ID: ").append(veterinarian.getId()).append(", Name: ").append(veterinarian.getName())
-                    .append(", Email: ").append(veterinarian.getEmail()).append(", Age: ").append(veterinarian.getAge())
-                    .append(", Phone Number: ").append(veterinarian.getPhoneNumber()).append(", Gender: ")
-                    .append(veterinarian.getGender()).append("IsOccupied: ").append(veterinarian.isOccupied())
-                    .append("\n");
+        return ResponseEntity.notFound().build();
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<String> updateIsOccupied(@PathVariable Long id, @RequestParam boolean isOccupied) {
+        if (veterinarianService.updateIsOccupied(id, isOccupied)) {
+            return ResponseEntity.ok(isOccupied ? "Veterinarian is now occupied" : "Veterinarian is now available");
         }
-        return sb.toString();
+        return ResponseEntity.notFound().build();
     }
-
-
-    @Override
-    public String updateVeterinarian(int id, String name, String email, int age, int phoneNumber, String gender) {
-        Veterinarian existingVeterinarian = repo.getVeterinarianById(id);
-        if (existingVeterinarian == null) {
-            return "Veterinarian not found";
-        }
-
-        existingVeterinarian.setName(name);
-        existingVeterinarian.setEmail(email);
-        existingVeterinarian.setAge(age);
-        existingVeterinarian.setPhoneNumber(phoneNumber);
-        existingVeterinarian.setGender(gender);
-
-        boolean updated = repo.updateVeterinarian(existingVeterinarian);
-        return updated ? "Updated successfully" : "Update failed";
-    }
-    @Override
-    public String deleteVeterinarian(int id) {
-        boolean deleted = repo.deleteVeterinarian(id);
-        return deleted ? "Deleted successfully" : "Deletion failed";
-    }
-@Override
-public String updateIsOccupied(int id, boolean isOccupied) {
-        Veterinarian existingVeterinarian = repo.getVeterinarianById(id);
-        if (existingVeterinarian == null) {
-            return "Veterinarian not found";
-        }
-
-        boolean updated = repo.updateIsOccupied(id, isOccupied);
-        return updated ? (isOccupied ? "Veterinarian marked as occupied" : "Veterinarian marked as available") : "Update failed";
-    }
-
-
-
 }

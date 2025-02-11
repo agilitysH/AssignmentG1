@@ -1,39 +1,47 @@
-package services;
+package com.example.petadoption.service;
 
-import classes.User;
-import classes.Role;
-import classes.RoleType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.petadoption.model.User;
+import com.example.petadoption.repository.UserRepository;
 import org.springframework.stereotype.Service;
-import repos.interfaces.UserRepo;
-import repos.interfaces.RoleRepo;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserRepo userRepo;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    @Autowired
-    private RoleRepo roleRepo;
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public Optional<User> getUserByLogin(String login) {
+        return userRepository.findByLogin(login);
+    }
 
-    public User createUser(String login, String password, RoleType roleType) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword(passwordEncoder.encode(password));
+    public User createUser(User user) {
+        if (userRepository.existsByLogin(user.getLogin())) {
+            throw new RuntimeException("User already exists");
+        }
+        return userRepository.save(user);
+    }
 
-        Role role = roleRepo.findByName(roleType).orElseThrow(() -> new RuntimeException("Role not found"));
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        user.setRoles(roles);
+    public User updateUser(Long id, User updatedUser) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setLogin(updatedUser.getLogin());
+                    user.setPassword(updatedUser.getPassword());
+                    user.setAccessLevel(updatedUser.getAccessLevel());
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
-        return userRepo.save(user);
+    public void deleteUser(String login) {
+        userRepository.deleteByLogin(login);
     }
 }

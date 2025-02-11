@@ -1,52 +1,32 @@
-package controllers;
+package com.example.petadoption.controller;
 
-import controllers.interfaces.IUserController;
-import repos.interfaces.IUserRepo;
-import classes.User;
+import com.example.petadoption.model.User;
+import com.example.petadoption.service.UserService;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-public class UserController implements IUserController {
-    private final IUserRepo repo;
-    public UserController(IUserRepo repo) { this.repo = repo; }
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+    private final UserService userService;
 
-    @Override
-    public String createUser(String login, String password, int accessLevel){
-        boolean created = repo.createUser(new User(login,password,accessLevel));
-        return created?"Created":"Creation failed";
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
-    @Override
-    public String getAllUsers(){
-        List<User> users = repo.getAllUsers();
-        if(users.isEmpty()){
-            return "No users found";
-        }
-        StringBuilder result = new StringBuilder();
-        for(User user : users){
-            result.append(user.getLogin()).append(",");
-            result.append(user.getPassword()).append(",");
-            result.append(user.getAccessLevel()).append(",");
-            result.append("\n");
-        }
-        return result.toString();
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
-    @Override
-    public String deleteUser(String login){
-        boolean deleted = repo.deleteUser(login);
-        return deleted?"Deleted":"Deletion failed";
+    @PostMapping("/register")
+    public User registerUser(@RequestBody User user) {
+        return userService.registerUser(user);
     }
 
-    @Override
-    public User getUser(String login){
-        return repo.findUserByLogin(login);
+    @PostMapping("/login")
+    public User loginUser(@RequestBody User user) {
+        return userService.loginUser(user);
     }
-
-    @Override
-    public String updateUser(String login, String password, int accessLevel){
-        boolean updated = repo.updateUser(login,password,accessLevel);
-        return updated?"Updated":"Update failed";
-    }
-
 }

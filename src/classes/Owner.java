@@ -1,41 +1,34 @@
-package classes;
+package com.example.petadoption.model;
 
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.ArrayList;
+import java.util.List;
 
+@Entity
+@Table(name = "owners")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+@ToString
 public class Owner extends Person {
 
-    private int numberOfPets = 0;
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Animal> pets = new ArrayList<>();
 
     public void addPet(Animal pet) {
         pets.add(pet);
+        pet.setOwner(this); // Устанавливаем владельца животному
+    }
+
+    public void removePet(Animal pet) {
+        pets.remove(pet);
+        pet.setOwner(null);
     }
 
     public int getNumberOfPets() {
-        return numberOfPets;
+        return pets.size();
     }
 
-    public void setNumberOfPets(int numberOfPets) {
-        this.numberOfPets = numberOfPets;
-    }
 
-    public Owner() {
-        super();
-    }
 
-    public Owner(String name, String email, int age, int phoneNumber, int numberOfPets, String gender) {
-        super(name, email, age, phoneNumber, gender);
-        this.numberOfPets = numberOfPets;
-    }
-
-    public Owner(String name, String email, int age, int phoneNumber, String gender) {
-        super(name, email, age, phoneNumber, gender);
-        this.numberOfPets = 1;
-    }
-
-    @Override
-    public String toString() {
-        return "Owner id = " + getId() + " name = " + getName() + " email = " + getEmail() + " age = " + getAge() + " phone number = " + getPhoneNumber() + " gender = " + getGender() + " numberOfPets = " + numberOfPets;
-    }
-}

@@ -1,138 +1,46 @@
-package classes;
+package com.example.petadoption.model;
+
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.util.List;
 
+@Entity
+@Table(name = "Animals")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+@ToString
 public class Animal {
-    private static int petIdCounter = 0;
-    private int petId;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long petId;  // ID теперь генерируется БД
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String species;
+
+    @Column(nullable = false)
     private int age;
 
+    @Column(nullable = false)
     private String gender;
-    private int ownerId;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id", nullable = true)
+    private Owner owner;
+
+    @ManyToOne
+    @JoinColumn(name = "veterinarian_id", nullable = true)
+    private Veterinarian veterinarian;
+
+    @Column(nullable = false)
     private String appointment = "Not appointed";
+
+    @ElementCollection
+    @CollectionTable(name = "medical_history", joinColumns = @JoinColumn(name = "animal_id"))
+    @Column(name = "record")
     private List<String> medicalHistory;
-    private int veterinarianId = 0;
-
-    public void counterDecrease(){
-        petId--;
-    }
-
-    public int getVeterinarianId() {
-        return veterinarianId;
-    }
-
-    public void setVeterinarianId(int veterinarianId) {
-        this.veterinarianId = veterinarianId;
-    }
-
-    public Animal() {
-        petId = ++petIdCounter;
-        appointment = "Not appointed";
-    }
-
-    public void setPetId(int petId) {
-        this.petId = petId;
-    }
-
-    public Animal(String name, String species, int age, String gender, int ownerId) {
-        this();
-        this.name = name;
-        this.species = species;
-        this.age = age;
-        this.gender = gender;
-        this.ownerId = ownerId;
-    }
-
-    public Animal(String name, String species, int age, String gender) {
-        this();
-        this.name = name;
-        this.species = species;
-        this.age = age;
-        this.gender = gender;
-        this.ownerId = 0;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public String getSpecies() {
-        return species;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public int getOwnerId() {
-        return ownerId;
-    }
-
-    public String getAppointment() {
-        return appointment;
-    }
-
-    public int getPetId() {
-        return petId;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public void setSpecies(String species) {
-        this.species = species;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-    public void setOwnerId(int ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public void setAppointment(String appointment) {
-        this.appointment = appointment;
-    }
-
-    public String isAppointed() {
-        return appointment;
-    }
-
-    public void addMedicalHistory(String record) {
-        medicalHistory.add(record);
-    }
-
-    public List<String> getMedicalHistory() {
-        return medicalHistory;
-    }
-
-    public String getMedicalHistoryToString() {
-        StringBuilder sb = new StringBuilder();
-        for (String record : medicalHistory) {
-            sb.append(record);
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    @Override
-    public String toString() {
-        return "Animal petId= " + petId + ", name= " + name + ", species= " + species + ", age= " + age + ", gender= " + gender + ", ownerId= " + ownerId + ", appointment= " + appointment;
-    }
-
-    public void setMedicalHistory(List<String> medicalHistory) {
-        this.medicalHistory = medicalHistory;
-    }
 }
